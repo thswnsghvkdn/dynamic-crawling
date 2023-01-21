@@ -5,7 +5,6 @@ from selenium.webdriver.common.by import By
 from time import time, sleep
 from multiprocessing import Pool
 from selenium.webdriver.chrome.options import Options
-
 op = Options()
 op.headless = True
 chrome = webdriver.Chrome(options=op)
@@ -13,7 +12,11 @@ class Crawling:
     def __init__(self) :
         pass
     def getSinglecontent(self, link):
-        chrome.get(link)   
+        try : 
+            chrome.get(link)   
+        except :
+            chrome = webdriver.Chrome(options=op)
+            chrome.get(link)
         title = chrome.find_element(By.XPATH, '/html/body/section/section/section/div[2]/div[1]').get_attribute('innerText')
         publishedDate = chrome.find_element(By.XPATH, '/html/body/section/section/section/div[1]/div[3]/div[2]/div').get_attribute('innerText')
         body = chrome.find_element(By.XPATH, '//*[@id="articleBody"]').get_attribute('innerText')
@@ -25,7 +28,11 @@ class Crawling:
         return contentObject
     
     def getMultiContents(self):
-        chrome.get('https://school.iamservice.net/organization/1674/group/2001892')
+        try :
+            chrome.get('https://school.iamservice.net/organization/1674/group/2001892')
+        except :
+            chrome = webdriver.Chrome(options=op)
+            chrome.get('https://school.iamservice.net/organization/1674/group/2001892')
         linkObjects = chrome.find_elements(By.XPATH, '/html/body/div[1]/div[2]/div/section/div[1]/div[1]/a')
         linkList = []
         for linkObject in linkObjects :
