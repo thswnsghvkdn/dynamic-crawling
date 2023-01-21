@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block body %}
+<form class="form-inline">
+    {% csrf_token %}
+    <div class="mb-3">    
+        <button type="button" id="create" class="btn btn-primary">Create</button>
+    </div>
+</form>
+<br />
+{% endblock %}
