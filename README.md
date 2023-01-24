@@ -1,7 +1,8 @@
 # dynamic-crawling
 
-동적 렌더링과 정적 렌더링 페이지 모두 소스 수정 없이 크롤링을 진행하기 위해 bs4 보다는 조금느리지만 selenium을 이용하였습니다
-
+동적 렌더링과 정적 렌더링 페이지 모두 소스 수정 없이 크롤링을 진행하기 위해 selenium을 이용하였습니다
+selenium의 경우 bs4 보다 느리지만 해당 부분을 파이썬 multiprocessing 을 활용하여 해당 부분을 보완하였습니다. 
+현재는 site의 링크들을 4개의 프로세스로 병렬 처리하도록 구성하였습니다
 
 
 화면 구성은 다음과 같습니다.
@@ -36,7 +37,13 @@ PYTHON DATEPARSER에 본초 자오선을 기준 차이를 이용하는 옵션을
 
 ![image](https://user-images.githubusercontent.com/60654232/214293008-0b4e541c-5849-419a-a2d4-fc98f6132397.png)
 
+제외할 원소의 XPATH를 입력 받아 해당 원소는 크롤링 이전에 JS 명령어로 삭제한 이후 크롤링 하여 필요없는 원소는 크롤링 되지 않도록 하였습니다.
+
+![image](https://user-images.githubusercontent.com/60654232/214293538-a75b638e-24bf-455e-a6eb-7b20adf01ed1.png)
 
 
+read 버튼 클릭시 DB 에 저장된 크롤링 된 데이터중 SITE NAME 태그에 입력되어 있는 SITE NAME 의 데이터들만 가져와 보여줍니다.
+
+![image](https://user-images.githubusercontent.com/60654232/214294217-84ac3d59-9bb7-4110-9f28-9103eacf2317.png)
 
 
