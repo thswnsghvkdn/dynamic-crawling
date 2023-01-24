@@ -54,7 +54,7 @@ $(document).ready(function(){
         // TODO : RESTAPI 업데이트 site name 직접입력일 경우 xpath 정보를 추가하고 그렇지 않다면 update
         let requstMethod = $('#timezone-select')[0].selectedIndex === 0 ? 'POST' : 'PUT';
         $.ajax({
-            url: 'create/',
+            url: 'article/',
             type: 'POST',
             data: {
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
@@ -78,7 +78,7 @@ $(document).ready(function(){
     // 크롤링 이후 DB에 저장되어있는 정보 중 옵션에 선택되어 있는 SITE 이름의 것들 RENDER
     $('#read').on('click', function(){
         $.ajax({
-            url: 'read/',
+            url: 'article/',
             type: 'GET',
             async: false,
             data:{

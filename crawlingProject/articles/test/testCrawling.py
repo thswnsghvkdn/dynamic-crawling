@@ -18,10 +18,11 @@ class Selenium(TestCase) :
             title='/html/body/section/section/section/div[2]/div[1]',
             publishedDate='/html/body/section/section/section/div[1]/div[3]/div[2]/div',
             body='//*[@id="articleBody"]',
-            attachmentList='/html/body/section/section/section/div[2]/div[2]/div[2]'
+            attachmentList='/html/body/section/section/section/div[2]/div[2]/div[2]',
+            excludePathList=''
         )
-        self.assertEqual( self.getNullValueCount(crawlingTest.getMultiContents(), 'title') , 0 )
-
+        self.assertEqual( self.getNullValueCount(crawlingTest.getMultiContents([''] , 5 ), 'title') , 0 )
+    
     @unittest.skip
     def testNaverBlogCrawling(self) :
         crawlingTest = Crawling(
@@ -30,9 +31,10 @@ class Selenium(TestCase) :
             title='/html/body/div[8]/div[1]/div[2]/div[2]/div[2]/div[2]/div/div/div[8]/div[1]/div/table[2]/tbody/tr/td[2]/div[1]/div/div[1]/div[2]/div/div[2]/div/p/span',
             publishedDate='/html/body/div[8]/div[1]/div[2]/div[2]/div[2]/div[2]/div/div/div[8]/div[1]/div/table[2]/tbody/tr/td[2]/div[1]/div/div[1]/div[2]/div/div[3]/span[2]',
             body='/html/body/div[8]/div[1]/div[2]/div[2]/div[2]/div[2]/div/div/div[8]/div[1]/div/table[2]/tbody/tr/td[2]/div[1]/div/div[2]',
-            attachmentList=''
+            attachmentList='',
+            excludePathList=''
         )
-        self.assertEqual( self.getNullValueCount(crawlingTest.getMultiContents(), 'title') , 0 )
+        self.assertEqual( self.getNullValueCount(crawlingTest.getMultiContents([''], 5), 'title') , 0 )
     @unittest.skip
     def testBBCNewsCrawling(self) :
         crawlingTest = Crawling(
@@ -41,9 +43,11 @@ class Selenium(TestCase) :
             title='/html/body/div[2]/div/main/div[5]/div/div[1]/article/header/h1',
             publishedDate='/html/body/div[2]/div/main/div[5]/div/div[1]/article/header/div[1]/ul/div/li/div[2]/span/span/time',
             body='/html/body/div[2]/div/main/div[5]/div/div[1]',
-            attachmentList=''
+            attachmentList='',
+            excludePathList='/html/body/div[2]/div/main/div[5]/div/div[1]/article/header'
         )
-        self.assertEqual( self.getNullValueCount(crawlingTest.getMultiContents(), 'title') , 0 )
+        self.assertEqual( self.getNullValueCount(crawlingTest.getMultiContents([''], 5), 'title') , 0 )
+    @unittest.skip
     def testTimeZone(self):     
         print(dateparser.parse('01-13', settings={'TIMEZONE': '+0900'}))
         print(dateparser.parse('Just now'))

@@ -17,54 +17,56 @@ def index(request):
     }
     return render(request, 'index.html', context)
 # 크롤링 작업
-def create(request):    
-    # 크롤링 작업에 필요한 xpath를 인자로 넘긴다.
-    crawling = Crawling(
-            siteUrl=request.POST['siteUrl'],
-            linkList=request.POST['linkList'],
-            title=request.POST['title'],
-            publishedDate=request.POST['publishedDate'],
-            body=request.POST['body'],
-            attachmentList=request.POST['attachmentList'],
-            excludePathList=json.loads(request.POST['excludePathList']) ,
-        )
-    existsLinks = getExistsLinkList(request.POST['siteName']) # 제외시킬 이미 존재 하는 url
-    dataList = crawling.getMultiContents(existsLinks, int(request.POST['crawlingCount'])) # 크롤링 작업 결과 객체 list
-    for dataObject in dataList : 
-        # 필수 값이 없을 경우 실패 테이블에 저장
-        if checkResultHasNull(dataObject) :       
-            fail = FailureLink(
-            url = dataObject["url"],
-            site_name = request.POST['siteName']
+def article(request):
+    if request.method == "POST" :     
+        # 크롤링 작업에 필요한 xpath를 인자로 넘긴다.
+        crawling = Crawling(
+                siteUrl=request.POST['siteUrl'],
+                linkList=request.POST['linkList'],
+                title=request.POST['title'],
+                publishedDate=request.POST['publishedDate'],
+                body=request.POST['body'],
+                attachmentList=request.POST['attachmentList'],
+                excludePathList=json.loads(request.POST['excludePathList']) ,
             )
-            fail.save()
-        else : 
-            # 성공시에 article 테이블에 데이터들을 저장한다.
-            article = Article(
-            url = dataObject["url"],
-            title=dataObject["title"], 
-            published_datetime=dateparser.parse(dataObject["publishedDate"], settings={'TIMEZONE': request.POST['timezone']}), 
-            body = dataObject["body"],
-            attachment_list = dataObject["attachmentList"],
-            site_name = request.POST['siteName']
-            )
-            try : 
-                article.save()
-            except :
-                # 저장시 문제가 발생할 경우 실패 테이블에 저장
+        existsLinks = getExistsLinkList(request.POST['siteName']) # 제외시킬 이미 존재 하는 url
+        dataList = crawling.getMultiContents(existsLinks, int(request.POST['crawlingCount'])) # 크롤링 작업 결과 객체 list
+        for dataObject in dataList : 
+            # 필수 값이 없을 경우 실패 테이블에 저장
+            if checkResultHasNull(dataObject) :       
                 fail = FailureLink(
                 url = dataObject["url"],
                 site_name = request.POST['siteName']
                 )
                 fail.save()
-    return redirect('/')
+            else : 
+                # 성공시에 article 테이블에 데이터들을 저장한다.
+                article = Article(
+                url = dataObject["url"],
+                title=dataObject["title"], 
+                published_datetime=dateparser.parse(dataObject["publishedDate"], settings={'TIMEZONE': request.POST['timezone']}), 
+                body = dataObject["body"],
+                attachment_list = dataObject["attachmentList"],
+                site_name = request.POST['siteName']
+                )
+                try : 
+                    article.save()
+                except :
+                    # 저장시 문제가 발생할 경우 실패 테이블에 저장
+                    fail = FailureLink(
+                    url = dataObject["url"],
+                    site_name = request.POST['siteName']
+                    )
+                    fail.save()
+        return redirect('/')
+    # db 에 저장된 값을 가져온다.
+    if request.method == "GET" : 
+        # 화면에서 넘긴 site 이름의 데이터들만 가져온다.
+        articles = Article.objects.filter(site_name = request.GET['siteName'] )
+        jsonPost = serializers.serialize('json', articles)
+        return HttpResponse(jsonPost, content_type="text/json-comment-filtered")
 
-# db 에 저장된 값을 가져온다.
-def read(request):
-    # 호면에서 넘긴 site 이름의 데이터들만 가져온다.
-    articles = Article.objects.filter(site_name = request.GET['siteName'] )
-    jsonPost = serializers.serialize('json', articles)
-    return HttpResponse(jsonPost, content_type="text/json-comment-filtered")
+
 
 # 옵션에서 테스트 케이스를 선택할 경우 해당 xpath 들을 db에서 가져온다.  
 def getSiteList(request):
