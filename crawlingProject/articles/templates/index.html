@@ -2,9 +2,63 @@
 {% block body %}
 <form class="form-inline">
     {% csrf_token %}
+    <div class="mb-3">
+        <label>site name</label>        
+        <!-- DB에 저장되어있는 테스트 케이스 옵션 -->
+        <select id="test-case" name="selbox">
+            <option value="direct">직접입력</option>
+            {% for site in siteList %}
+            <option value="{{site.site_name}}" id ="{{site.id}}" >{{site.site_name}}</option>
+            {% endfor %}
+        </select>
+        <input type="text" id="site-name" class="form-control" style="width:30%;" required="required"/>
+    </div>   
+    <div class="mb-3">
+        <label>site url</label>
+        <input type="text" id="site-url" class="form-control" style="width:30%;" required="required"/>
+    </div>    
+    <div class="mb-3">
+        <label>a tag list</label>
+        <select id="clawling-count">
+            <!-- 한번에 진행할 크롤링 갯수 -->
+            <option value="5">5개씩 크롤링</option>
+            <option value="10">10개씩 크롤링</option>
+            <option value="999">전부 크롤링</option>
+        </select>
+        <input type="text" id="link-list" class="form-control" style="width:30%;" required="required"/>
+    </div>
+    <div class="mb-3">
+        <label>title</label>
+        <input type="text" id="title" class="form-control" style="width:30%;" required="required"/>
+    </div>
+    <div class="mb-3">
+        <label>published date</label>
+        <input type="text" id="published-date" class="form-control" style="width:30%;" />
+    </div>
+    <div class="mb-3">
+        <label>published date timezone</label>
+        <select id="timezone-select" data-toggle="tooltip" title="<img src='https://www.nist.gov/sites/default/files/images/2019/12/23/worldzones.gif'/>" >
+            <option value="timezone">TIMEZONES</option>
+        </select>
+        <input data-toggle="tooltip" title="<img src='https://www.nist.gov/sites/default/files/images/2019/12/23/worldzones.gif'/>" type="text" id="timezone" class="form-control" style="width:30%;" />
+    </div>
+    <div class="mb-3">
+        <label>body</label>
+        <input type="text" id="body" class="form-control" style="width:30%;" required="required"/>
+    </div>
+    <div class="mb-3">
+        <label>attachment list</label>
+        <input type="text" id="attachment-list" class="form-control" style="width:30%;" />
+    </div>
+    <div class="mb-3">
+        <label>exclude element</label> <button type="button" id="add-exclude" >추가</button>
+        <div id ="exclude"></div>
+    </div>
     <div class="mb-3">    
-        <button type="button" id="create" class="btn btn-primary">Create</button>
+        <button type="button" id="create" class="btn btn-primary">Crawling</button>
+        <button type="button" id="read" class="btn btn-primary">Read</button>
     </div>
 </form>
 <br />
+<div id="result"></div>
 {% endblock %}
